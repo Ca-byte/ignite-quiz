@@ -1,8 +1,8 @@
 import { Check } from 'phosphor-react-native';
 import { Text, TouchableOpacity, TouchableOpacityProps } from 'react-native';
 
-import { styles } from './styles';
 import { THEME } from '../../styles/theme';
+import { styles } from './styles';
 
 export function ConfirmButton({ ...rest }: TouchableOpacityProps) {
   return (
@@ -12,7 +12,7 @@ export function ConfirmButton({ ...rest }: TouchableOpacityProps) {
       {...rest}
     >
       <Text style={styles.title}>
-        Confirmar
+        Confirm
       </Text>
 
       <Check
