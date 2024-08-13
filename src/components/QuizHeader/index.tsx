@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native';
+import { Text, View } from 'react-native';
 
 import { ProgressBar } from '../ProgressBar';
 
@@ -19,7 +19,7 @@ export function QuizHeader({ title, totalOfQuestions, currentQuestion }: Props) 
 
       <View style={styles.header}>
         <Text style={styles.question}>
-          Questão {currentQuestion}
+          Question {currentQuestion}
         </Text>
 
         <Text style={styles.length}>

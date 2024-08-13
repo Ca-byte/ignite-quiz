@@ -1,5 +1,5 @@
-import { Text, View } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { Text, View } from 'react-native';
 
 import { Button } from '../../components/Button';
 
@@ -20,16 +20,16 @@ export function Finish() {
     <View style={styles.container}>
       <View style={styles.message}>
         <Text style={styles.title}>
-          Parabéns!
+          Congratulations!
         </Text>
 
         <Text style={styles.subtitle}>
-          Você acertou {points} de {total} questões
+          You got{points} out of {total} questions correctly
         </Text>
       </View>
 
       <Button
-        title="Ir para o início"
+        title="Go to the beginning"
         onPress={() => navigate('home')}
       />
     </View>
