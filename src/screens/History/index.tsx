@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { HouseLine, Trash } from 'phosphor-react-native';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Alert, Pressable, ScrollView, View } from 'react-native';
 import Animated, { Layout, SlideInRight, SlideOutRight } from 'react-native-reanimated';
 import { Header } from '../../components/Header';
@@ -17,6 +17,7 @@ export function History() {
   const [history, setHistory] = useState<HistoryProps[]>([]);
 
   const { goBack } = useNavigation();
+  const swipeableRef = useRef<Swipeable[]>([]);
 
   async function fetchHistory() {
     const response = await historyGetAll();
@@ -30,7 +31,8 @@ export function History() {
     fetchHistory();
   }
 
-  function handleRemove(id: string) {
+  function handleRemove(id: string, index: number) {
+    swipeableRef.current?.[index].close();
     Alert.alert(
       'Remove',
       'Do you want to remove this record?',
@@ -66,7 +68,7 @@ export function History() {
         showsVerticalScrollIndicator={false}
       >
         {
-          history.map((item) => (
+          history.map((item, index) => (
             <Animated.View
               key={item.id}
               entering={SlideInRight}
@@ -74,12 +76,17 @@ export function History() {
               layout={Layout.springify()}
               >
                 <Swipeable
+                 ref={(ref) => {
+                  if(ref) {
+                    swipeableRef.current.push(ref)
+                  }
+                }}
                 overshootLeft={false}
                 containerStyle={styles.swipeableContainer}
                 renderLeftActions={() => (
                   <Pressable 
                     style={styles.swipeableRemove}
-                    onPress={() => handleRemove(item.id)}
+                    onPress={() => handleRemove(item.id, index)}
                   >
                     <Trash 
                       size={32} 
