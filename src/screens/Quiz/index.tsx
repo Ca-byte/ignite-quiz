@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Alert, ScrollView, View } from 'react-native';
+import { Alert, View } from 'react-native';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 import Animated, {
   Easing,
   interpolate,
+  useAnimatedScrollHandler,
   useAnimatedStyle,
   useSharedValue,
   withSequence,
@@ -38,6 +39,7 @@ export function Quiz() {
 
   const { navigate } = useNavigation();
   const shake = useSharedValue(0);
+  const scrollY = useSharedValue(0);
 
   const route = useRoute();
   const { id } = route.params as Params;
@@ -118,6 +120,12 @@ export function Quiz() {
     }
   })
 
+  const scrollHandler = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      scrollY.value = event.contentOffset.y
+    }
+  })
+
   useEffect(() => {
     const quizSelected = QUIZ.filter(item => item.id === id)[0];
     setQuiz(quizSelected);
@@ -136,7 +144,8 @@ export function Quiz() {
 
   return (
     <View style={styles.container}>
-      <ScrollView
+      
+      <Animated.ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.question}
       >
@@ -159,7 +168,7 @@ export function Quiz() {
           <OutlineButton title="Stop" onPress={handleStop} />
           <ConfirmButton onPress={handleConfirm} />
         </View>
-      </ScrollView>
+      </Animated.ScrollView>
     </View >
   );
 }
