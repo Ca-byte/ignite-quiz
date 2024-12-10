@@ -26,6 +26,8 @@ import { QUIZ } from '../../data/quiz';
 import { historyAdd } from '../../storage/quizHistoryStorage';
 import { THEME } from '../../styles/theme';
 
+import { Gesture, GestureDetector, } from 'react-native-gesture-handler';
+
 interface Params {
   id: string;
 }
@@ -42,10 +44,11 @@ export function Quiz() {
   const { navigate } = useNavigation();
   const shake = useSharedValue(0);
   const scrollY = useSharedValue(0);
+  const cardPosition = useSharedValue(0);
 
   const route = useRoute();
   const { id } = route.params as Params;
-  
+
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event) => {
       scrollY.value = event.contentOffset.y
@@ -70,6 +73,12 @@ export function Quiz() {
     return {
       opacity: interpolate(scrollY.value, [60, 90], [1, 0], Extrapolate.CLAMP)
     }
+  })
+
+  const onPan = Gesture
+  .Pan()
+  .onUpdate((event)=> {
+    cardPosition.value = withTiming(0);
   })
 
   function handleSkipConfirm() {
@@ -190,15 +199,17 @@ export function Quiz() {
             totalOfQuestions={quiz.questions.length}
           />
         </Animated.View>
+        <GestureDetector gesture={onPan}>
+          <Animated.View style={shakeStyleAnimated}>
+            <Question
+              key={quiz.questions[currentQuestion].title}
+              question={quiz.questions[currentQuestion]}
+              alternativeSelected={alternativeSelected}
+              setAlternativeSelected={setAlternativeSelected}
+            />
+          </Animated.View>
 
-        <Animated.View style={shakeStyleAnimated}>
-          <Question
-            key={quiz.questions[currentQuestion].title}
-            question={quiz.questions[currentQuestion]}
-            alternativeSelected={alternativeSelected}
-            setAlternativeSelected={setAlternativeSelected}
-          />
-        </Animated.View>
+        </GestureDetector>
 
         <View style={styles.footer}>
           <OutlineButton title="Stop" onPress={handleStop} />
