@@ -5,6 +5,7 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 
 import Animated, {
   Easing,
+  Extrapolate,
   interpolate,
   useAnimatedScrollHandler,
   useAnimatedStyle,
@@ -29,16 +30,6 @@ interface Params {
   id: string;
 }
 
-const fixedProgressBarStyles = useAnimatedStyle(() => {
-  return {
-    position: 'absolute',
-    paddingTop: 50,
-    backgroundColor: THEME.COLORS.GREY_500,
-    width: '100%',
-    left: '-5%'
-  }
-})
-
 type QuizProps = typeof QUIZ[0];
 
 export function Quiz() {
@@ -54,6 +45,32 @@ export function Quiz() {
 
   const route = useRoute();
   const { id } = route.params as Params;
+  
+  const scrollHandler = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      scrollY.value = event.contentOffset.y
+    }
+  })
+
+  const fixedProgressBarStyles = useAnimatedStyle(() => {
+    return {
+      position: 'absolute',
+      paddingTop: 50,
+      zIndex: 1,
+      backgroundColor: THEME.COLORS.GREY_500,
+      width: '100%',
+      left: '-5%',
+      opacity: interpolate( scrollY.value, [50, 90], [0, 10], Extrapolate.CLAMP),
+        transform: [
+          { translateY: interpolate( scrollY.value, [50, 100], [-40, 0], Extrapolate.CLAMP) }
+        ]
+    }
+  })
+  const headerStyles = useAnimatedStyle(() => {
+    return {
+      opacity: interpolate(scrollY.value, [60, 90], [1, 0], Extrapolate.CLAMP)
+    }
+  })
 
   function handleSkipConfirm() {
     Alert.alert('Skip', 'Do you really want to skip the question?', [
@@ -131,12 +148,6 @@ export function Quiz() {
     }
   })
 
-  const scrollHandler = useAnimatedScrollHandler({
-    onScroll: (event) => {
-      scrollY.value = event.contentOffset.y
-    }
-  })
-
   useEffect(() => {
     const quizSelected = QUIZ.filter(item => item.id === id)[0];
     setQuiz(quizSelected);
@@ -159,18 +170,26 @@ export function Quiz() {
         style={fixedProgressBarStyles}
       >
         <Text style={styles.title}>{quiz.title}</Text>
-        <ProgressBar total={quiz.questions.length} current={currentQuestion + 1} />
+        <ProgressBar 
+          total={quiz.questions.length} 
+          current={currentQuestion + 1} 
+        />
       </Animated.View>
 
       <Animated.ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.question}
+        onScroll={scrollHandler}
+        scrollEventThrottle={16}
+
       >
-        <QuizHeader
-          title={quiz.title}
-          currentQuestion={currentQuestion + 1}
-          totalOfQuestions={quiz.questions.length}
-        />
+        <Animated.View style={[styles.header, headerStyles]}>
+          <QuizHeader
+            title={quiz.title}
+            currentQuestion={currentQuestion + 1}
+            totalOfQuestions={quiz.questions.length}
+          />
+        </Animated.View>
 
         <Animated.View style={shakeStyleAnimated}>
           <Question
