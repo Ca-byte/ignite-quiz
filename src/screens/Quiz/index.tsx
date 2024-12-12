@@ -83,7 +83,6 @@ export function Quiz() {
   .Pan()
   .onUpdate((event)=> {
     const moveToLeft = event.translationX < 0;
-    
     if(moveToLeft){
       cardPosition.value = event.translationX
     }
@@ -214,7 +213,6 @@ export function Quiz() {
         contentContainerStyle={styles.question}
         onScroll={scrollHandler}
         scrollEventThrottle={16}
-
       >
         <Animated.View style={[styles.header, headerStyles]}>
           <QuizHeader
