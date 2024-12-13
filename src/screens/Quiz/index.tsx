@@ -15,17 +15,17 @@ import Animated, {
   withTiming
 } from 'react-native-reanimated';
 
-import { styles } from './styles';
-
 import { ConfirmButton } from '../../components/ConfirmButton';
 import { Loading } from '../../components/Loading';
 import { OutlineButton } from '../../components/OutlineButton';
+import { OverlayFeedback } from '../../components/OverlayFeedback';
 import { ProgressBar } from '../../components/ProgressBar';
 import { Question } from '../../components/Question';
 import { QuizHeader } from '../../components/QuizHeader';
 import { QUIZ } from '../../data/quiz';
 import { historyAdd } from '../../storage/quizHistoryStorage';
 import { THEME } from '../../styles/theme';
+import { styles } from './styles';
 
 import { Gesture, GestureDetector, } from 'react-native-gesture-handler';
 
@@ -199,6 +199,7 @@ export function Quiz() {
 
   return (
     <View style={styles.container}>
+      <OverlayFeedback status={0} />
       <Animated.View
         style={fixedProgressBarStyles}
       >
