@@ -3,6 +3,7 @@ import { Text, View } from 'react-native';
 
 import { Button } from '../../components/Button';
 
+import { Stars } from '../../components/Stars';
 import { styles } from './styles';
 
 interface Params {
@@ -19,12 +20,13 @@ export function Finish() {
   return (
     <View style={styles.container}>
       <View style={styles.message}>
+        <Stars />
         <Text style={styles.title}>
           Congratulations!
         </Text>
 
         <Text style={styles.subtitle}>
-          You got{points} out of {total} questions correctly
+          You got {points} out of {total} questions correctly
         </Text>
       </View>
 
